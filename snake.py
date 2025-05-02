@@ -15,8 +15,8 @@ class Snake():
         self.outline = []  # left side of animal
         self.other_side = []  # right side of animal
 
-        self.bodysize = [40, 45, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 32, 30, 28, 28, 28, 28, 28, 28, 28, 28, 26,
-                         25, 24, 23, 22, 21, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 7, 7, 7, 7, 7, 5]  # snake body
+        self.bodysize = [40, 45, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 32, 30, 28, 28, 28, 28, 28, 28, 28, 28, 28,
+                         26, 26, 24, 22, 21, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 7, 7, 7, 7, 7, 5]  # snake body
         self.points = [(num * self.desired_distance, 250) for num in range(0, len(self.bodysize))]
 
         self.eye_closeness = 15
@@ -70,21 +70,19 @@ class Snake():
                             (size - self.eye_closeness) * -m.sin(self.head_theta - quarter_turn) + point[1])
                 eye_right = ((size - self.eye_closeness) * -m.cos(self.head_theta + quarter_turn) + point[0],
                              (size - self.eye_closeness) * -m.sin(self.head_theta + quarter_turn) + point[1])
-                self.other_side.append(headtop)  # tip of head
-                self.other_side.append(headleft)
-                self.other_side.append(headfullleft)
+                self.other_side.extend([headtop, headleft, headfullleft])
 
-                self.outline.append(headright)
-                self.outline.append(headfullright)
 
-                pygame.draw.circle(screen, (255, 0, 0), headtop,
-                                   line_width)
-                pygame.draw.circle(screen, (255, 0, 0), headright,
-                                   line_width)
-                pygame.draw.circle(screen, (255, 0, 0), headleft, line_width)
-                pygame.draw.circle(screen, (255, 0, 0), headfullleft, line_width)
+                self.outline.extend([headright, headfullright])
 
-                pygame.draw.circle(screen, (255, 0, 0), headfullright, line_width)
+                #pygame.draw.circle(screen, (255, 0, 0), headtop,
+                #                   line_width)
+                #pygame.draw.circle(screen, (255, 0, 0), headright,
+                #                  line_width)
+                #pygame.draw.circle(screen, (255, 0, 0), headleft, line_width)
+                #pygame.draw.circle(screen, (255, 0, 0), headfullleft, line_width)
+
+                #pygame.draw.circle(screen, (255, 0, 0), headfullright, line_width)
 
                 # if at the beginning, just add the head points
             elif k != 0:
@@ -123,8 +121,8 @@ class Snake():
 
                                            1])  # right side of animal
 
-                pygame.draw.circle(screen, (255, 0, 0), side_of_point, line_width)
-                pygame.draw.circle(screen, (255, 0, 0), other_side_of_point, line_width)
+                #pygame.draw.circle(screen, (255, 0, 0), side_of_point, line_width)
+                #pygame.draw.circle(screen, (255, 0, 0), other_side_of_point, line_width)
 
                 self.outline.append(side_of_point)
                 self.other_side.append(other_side_of_point)
@@ -140,9 +138,9 @@ class Snake():
                     self.other_side.append((size * -m.cos(theta + quarter_turn * 1.75) + point[0],
                                             size * -m.sin(theta + quarter_turn * 1.75) + point[
                                                 1]))
-                    pygame.draw.circle(screen, (255, 0, 0), (size * m.cos(theta + quarter_turn * 2) + point[0],
-                                                             size * m.sin(theta + quarter_turn * 2) + point[1]),
-                                       line_width)
+             #       pygame.draw.circle(screen, (255, 0, 0), (size * m.cos(theta + quarter_turn * 2) + point[0],
+                                      #                       size * m.sin(theta + quarter_turn * 2) + point[1]),
+                                   #    line_width)
 
             if show_body_circles:
                 self.show_rig = True

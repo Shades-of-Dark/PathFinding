@@ -19,6 +19,9 @@ class Vector(pygame.math.Vector2):
         return angle % 360
 
 
+def lerp(a, b, t):
+    return a + (b - a) * t
+
 def draw_rotated_ellipse(surf: pygame.Surface, color: (int, int, int), rect: pygame.Rect, angle: float,
                          width=0):  # angle must be in degrees
     targetrect = pygame.Rect(0, 0, rect.width, rect.height)

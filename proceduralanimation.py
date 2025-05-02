@@ -23,7 +23,7 @@ clock = pygame.time.Clock()
 
 p = 0
 
-fish_speed = 5
+
 current_body = snake
 while True:
     screen.fill((40, 44, 52))

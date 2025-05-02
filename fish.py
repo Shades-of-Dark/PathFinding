@@ -16,7 +16,7 @@ class Fish:
         self.outline = []  # left side of animal
         self.other_side = []  # right side of animal
 
-        self.bodysize = [34, 40, 42, 41, 38, 32, 25, 19, 16, 9]
+        self.bodysize = [32, 40, 42, 41, 38, 32, 25, 19, 16, 9]
         self.points = [(num * self.desired_distance, 250) for num in range(0, len(self.bodysize))]
 
         self.eye_closeness = 9
@@ -26,7 +26,7 @@ class Fish:
         self.cooltheta = 0
         self.head_reference_vector = Vector(1, 0)  # used to calculate head angle
 
-        self.speed = 6  # how fast the animal moves
+        self.speed = 8  # how fast the animal moves
 
         oval_elongation = 2.5
         self.pec_fin_right = pygame.Rect(0, 0, 30, 30 * oval_elongation)
@@ -72,9 +72,11 @@ class Fish:
 
         quarter_turn = m.pi / 2
 
-        for k, point in enumerate(self.points):
+        for k in range(10):
 
             size = self.bodysize[k]
+            scaled_point = self.spine.points[k]
+            theta = self.spine.angles[k]
             if k == 0:
                 #   dx_head = self.points[1][0] - self.points[0][0]
                 # dy_head = self.points[1][1] - self.points[0][1]
@@ -84,34 +86,34 @@ class Fish:
 
                 #   new_head_theta = m.atan2(calc.y, calc.x)
 
-                self.head_theta = self.spine.angles[k]
                 #     self.spine.joints[k] = calc
                 #   self.spine.angles[k] = self.head_theta
+                smooth_f = 20
+                self.other_side.append(parametric_equation_circle(-size, theta, scaled_point))
+                for j in range(smooth_f//2, 2, -1):
+                    headleftpoint = parametric_equation_circle(-size, theta + m.pi/j, scaled_point)
+                    headrightpoint = parametric_equation_circle(-size, theta - m.pi/j, scaled_point)
+                    self.other_side.append(headleftpoint)
+                    self.outline.append(headrightpoint)
 
-                headtop = (size * -m.cos(self.head_theta) + point[0],
-                           size * -m.sin(self.head_theta) + point[1])
-                headleft = (size * -m.cos(self.head_theta + m.pi / 4) + point[0],
-                            size * -m.sin(self.head_theta + m.pi / 4) + point[1])
+                eye_left = parametric_equation_circle(size - self.eye_closeness, theta - quarter_turn, scaled_point)
+                eye_right = parametric_equation_circle(size - self.eye_closeness, theta + quarter_turn, scaled_point)
+                '''
+                headtop = (size * -m.cos(theta) + scaled_point[0],
+                           size * -m.sin(theta) + scaled_point[1])
+                headleft = (size * -m.cos(theta + m.pi / 4) + scaled_point[0],
+                            size * -m.sin(theta + m.pi / 4) + scaled_point[1])
 
-                headright = (size * -m.cos(self.head_theta - m.pi / 4) + point[0],
-                             size * -m.sin(self.head_theta - m.pi / 4) + point[1])
-                headfullleft = (size * -m.cos(self.head_theta + quarter_turn) + point[0],
-                                size * -m.sin(self.head_theta + quarter_turn) + point[1])
-                headfullright = (size * -m.cos(self.head_theta - quarter_turn) + point[0],
-                                 size * -m.sin(self.head_theta - quarter_turn) + point[1])
-
-                eye_left = ((size - self.eye_closeness) * -m.cos(self.head_theta - quarter_turn) + point[0],
-                            (size - self.eye_closeness) * -m.sin(self.head_theta - quarter_turn) + point[1])
-                eye_right = ((size - self.eye_closeness) * -m.cos(self.head_theta + quarter_turn) + point[0],
-                             (size - self.eye_closeness) * -m.sin(self.head_theta + quarter_turn) + point[1])
-
-                self.other_side.append(headtop)  # tip of head
-                self.other_side.append(headleft)
-                self.other_side.append(headfullleft)
-
-                self.outline.append(headright)
-                self.outline.append(headfullright)
-
+                headright = (size * -m.cos(theta - m.pi / 4) + scaled_point[0],
+                             size * -m.sin(theta - m.pi / 4) + scaled_point[1])
+                headfullleft = (size * -m.cos(theta + quarter_turn) + scaled_point[0],
+                                size * -m.sin(theta + quarter_turn) + scaled_point[1])
+                headfullright = (size * -m.cos(theta - quarter_turn) + scaled_point[0],
+                                 size * -m.sin(theta - quarter_turn) + scaled_point[1])
+                                 
+                self.other_side.extend([headtop, headleft, headfullleft])  # tip of head
+                self.outline.extend([headright, headfullright])
+                '''
             #       pygame.draw.circle(screen, (255, 0, 0), headtop,
             #                line_width)
             #     pygame.draw.circle(screen, (255, 0, 0), headright,
@@ -122,16 +124,18 @@ class Fish:
             #      pygame.draw.circle(screen, (255, 0, 0), headfullright, line_width)
 
             # if at the beginning, just add the head points
-            elif k != 0:
+            else:
 
-                scaled_point = self.spine.points[k]
-                theta = self.spine.angles[k]
                 #   self.spine.angles[k] = theta
 
                 side_of_point = parametric_equation_circle(size, theta + quarter_turn,
                                                            scaled_point)  # right side of animal
 
                 other_side_of_point = parametric_equation_circle(size, theta - quarter_turn, scaled_point)  # left side
+
+                self.outline.append(side_of_point)
+                self.other_side.append(other_side_of_point)
+
                 # Calculate pectoral fins
 
                 if k == 1:
@@ -151,9 +155,6 @@ class Fish:
                 #     pygame.draw.circle(screen, (255, 0, 0), side_of_point, line_width)
                 #      pygame.draw.circle(screen, (255, 0, 0), other_side_of_point, line_width)
 
-                self.outline.append(side_of_point)
-                self.other_side.append(other_side_of_point)
-
                 if k == len(self.points) - 1:
                     self.tail_theta = theta
                     self.outline.append((size * -m.cos(theta + quarter_turn * 2.25) + scaled_point[0],
@@ -171,7 +172,7 @@ class Fish:
 
             if show_body_circles:
                 self.show_rig = True
-                pygame.draw.circle(screen, WHITE, point, size, 5)  # body segment visiualisation
+                pygame.draw.circle(screen, WHITE, scaled_point, size, 5)  # body segment visiualisation
 
         if show_body_circles:
             pygame.draw.lines(screen, WHITE, False, self.points, 5)  # IF YOU WANT TO SEE SPINAL COORD
@@ -233,8 +234,9 @@ class Fish:
             bezier_points = [self.spine.points[3]]
             # Draw the cubic Bezier curve for the dorsal fin
             last_bezier = start_point  # Start of the curve
-            for i in range(101):  # Interpolating the curve
-                t = i / 100
+            smooth_f = 20
+            for i in range(smooth_f + 1):  # Interpolating the curve
+                t = i / smooth_f
                 bezier_point = (
                     (1 - t) ** 3 * start_point[0] + 3 * (1 - t) ** 2 * t * control_point1[0] +
                     3 * (1 - t) * t ** 2 * control_point2[0] + t ** 3 * end_point[0],
