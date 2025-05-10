@@ -51,10 +51,10 @@ while True:
     # p += 0.08
 
     # surface, target, vertice display, body segments
-    move_slowly = m.atan2(my - current_body.points[0][1], mx - current_body.points[0][0])
+    move_slowly = m.atan2(my - current_body.spine.points[0][1], mx - current_body.spine.points[0][0])
     move_towards_target = (
-        m.cos(move_slowly) * current_body.speed + current_body.points[0][0],
-        m.sin(move_slowly) * current_body.speed + current_body.points[0][1])
+        m.cos(move_slowly) * current_body.speed + current_body.spine.points[0][0],
+        m.sin(move_slowly) * current_body.speed + current_body.spine.points[0][1])
     current_body.show_rig = leftclick[0]
     current_body.update(screen, move_towards_target, leftclick[2])
     current_body.desired_distance = desired_distance
