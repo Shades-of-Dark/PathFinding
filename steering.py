@@ -57,7 +57,7 @@ class Entity:
                     d_v = Vector(distX, distY)
                     d_v.normalize_ip()
 
-                    weight = -(self.DISTANCE_CONSTRAINT - dist)/self.DISTANCE_CONSTRAINT
+                    weight = -(self.DISTANCE_CONSTRAINT - dist) / self.DISTANCE_CONSTRAINT
 
                     self.danger_map.append((d_v, weight))
             else:
@@ -72,7 +72,7 @@ class Entity:
         for i in range(len(self.danger_map)):
 
             danger_weights.append(self.danger_map[i][1])
-            # Compare danger vector length with the maximum danger vector
+            # Compare danger vector length with the min danger vector
             if self.danger_map[i][1] < max_danger_weight[1]:
                 self.masks[i] = False
 
@@ -87,15 +87,14 @@ class Entity:
                 resultant_vector.y += interest_vector.y
                 n += 1
 
-
         resultant_vector.x /= n
         resultant_vector.y /= n
-        if resultant_vector.x != 0 or resultant_vector.y != 0:
+        if resultant_vector.length() != 0:
             resultant_vector.normalize_ip()
         # Apply movement based on the combined interest direction
         self.x += resultant_vector.x * self.speed
         self.y += resultant_vector.y * self.speed
-
+        print("Resultant vector:", resultant_vector)
         # Draw the resulting movement direction
         end_pos = (self.x + resultant_vector.x * 50, self.y + resultant_vector.y * 50)
         pygame.draw.line(display, (255, 255, 0), (self.x, self.y), end_pos, 2)
@@ -135,20 +134,20 @@ while True:
             pygame.quit()
             sys.exit()
 
-    #  boundary.x, boundary.y = pygame.mouse.get_pos()
-    #   boundary.update()
-    dangers = [ boundary2, boundary3]
+    dangers = [boundary, boundary2, boundary3]
     interests = [car2, car3]
     acar.update(dangers, interests, screen)
 
-  #  boundary.draw(screen)
-    boundary2.draw(screen)
-    boundary3.draw(screen)
-
     acar.draw(screen)
-    car2.draw(screen)
-    car3.draw(screen)
- #   car4.draw(screen)
 
+    for d in dangers:
+        d.y -= 0.01
+        d.update([], [], screen)
+        d.draw(screen)
+    for i in interests:
+        i.y += 0.01
+        i.draw(screen)
+        i.update([], [], screen)
     acar.draw_vectors(screen)
+
     pygame.display.flip()

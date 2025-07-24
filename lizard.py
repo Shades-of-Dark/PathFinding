@@ -22,7 +22,7 @@ class Lizard:
         self.eye_closeness = 8
 
         self.spine = Chain((500, 250), 14, distance)
-        self.speed = 5
+        self.speed = 4
 
         # Define base leg lengths
         self.front_leg_length = 39
